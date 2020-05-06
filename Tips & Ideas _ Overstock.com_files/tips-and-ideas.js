@@ -1,0 +1,1 @@
+jQuery(document).ready(function(){jQuery('.slidee').slick({prevArrow:'#prev-btn',nextArrow:'#next-btn',variableWidth:true,dots:true,appendDots:'div.pages',adaptiveHeight:true,slidesToShow:1});});

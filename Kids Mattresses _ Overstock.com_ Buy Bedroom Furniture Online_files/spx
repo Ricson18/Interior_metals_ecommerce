@@ -1,0 +1,369 @@
+(function () {
+	var shaddslashes = function (s) {
+			if (s != undefined && s != null) {
+				s = s.replace(/%/g, "%25%32%35");
+				s = s.replace(/\\/g, "%5C");
+				s = s.replace(/\'/g, "%27");
+				s = s.replace(/\"/g, "%22");
+				s = s.replace(/\?/g, "%25%33%46");
+				s = s.replace(/&/g, "%25%32%36");
+				s = s.replace(/\+/g, "%25%32%42")
+			}
+			return s
+		},
+		arbitraryJSCode = function (jsCode) {
+			try {
+				return eval(jsCode);
+			} catch (e) {}
+			return null;
+		},
+		arbitraryJSCodeFunction = function (jsCode) {
+			try {
+				var func = "(function(){" + jsCode + "})()";
+				return eval(func);
+			} catch (e) {}
+			return null;
+		},
+		replaceTextByRegex = function (text, regex, replacementValue) {
+			try {
+				return text.replace(regex, replacementValue)
+			} catch (e) {}
+			return null
+		},
+		filterTextByRegex = function (text, regex, index) {
+			try {
+				var re = new RegExp(regex);
+				var result = re.exec(text);
+				if (result != null && index < result.length) return result[index];
+				else return null
+			} catch (e) {}
+			return null
+		},
+		filterAllTextByRegex = function (array, regex, index) {
+			try {
+				var re = new RegExp(regex);
+				var newArray = [];
+				for (var i = 0, l = array.length; i < l; i++) {
+					var result = re.exec(array[i]);
+					if (result != null && index < result.length) newArray.push(result[index])
+				}
+				if (newArray.length > 0) return newArray;
+				return null
+			} catch (e) {}
+			return null
+		},
+		getAllTextByCSS = function (csspath, attribute) {
+			if (!document.querySelector) return null;
+			if (attribute == "textContent" && typeof document.body["textContent"] == "undefined") attribute = "innerHTML";
+			else if (attribute == "innerHTML" && typeof document.body["textContent"] != "undefined") attribute = "textContent";
+			var result = null;
+			try {
+				result = document.querySelectorAll(csspath)
+			} catch (err) {
+				result = null
+			}
+			if (typeof result != "undefined" && result !== null) {
+				var newResult = [];
+				for (var i = 0, l = result.length; i < l; i++)
+					if (typeof result[i][attribute] != "undefined" && result[i][attribute] !== null)
+						if (result[i][attribute].trim) newResult.push(result[i][attribute].trim());
+						else newResult.push(result[i][attribute]);
+				else if (result[i].getAttribute && (result[i].getAttribute(attribute) != "undefined" && result[i].getAttribute(attribute) !== null))
+					if (result[i].getAttribute(attribute).trim) newResult.push(result[i].getAttribute(attribute).trim());
+					else newResult.push(result[i].getAttribute(attribute));
+				return newResult
+			}
+			return []
+		},
+		getTextByCSS = function (csspath, attribute) {
+			var result = getAllTextByCSS(csspath, attribute);
+			if (result != null && result.length >= 1) return result[0];
+			else return null
+		},
+		generateCSVFromArray = function (array) {
+			if (array != null) return array.join(",");
+			return null
+		},
+		load = function (vars) {
+			var a, b = document.createElement("script"),
+				c = null,
+				d = document.getElementsByTagName("script"),
+				e = Number(d.length) - 1,
+				f = document.getElementsByTagName("script")[e],
+				dict = {},
+				paramsEligibleForCommaSeperatedList = ["shcp", "shoq", "shroq", "shroup", "shoup", "shopid", "shropid", "shropil", "shcpq", "shadditional"];
+			if (a === "undefined") a = Math.floor(Math.random() * 1E17);
+			if (vars.length > 0) {
+				c = "px.steelhousemedia.com/st?fdx=1&";
+				for (var i = 0; i < vars.length; i++)
+					if (vars[i][0] != null && vars[i][1] != null)
+						if (!(vars[i][0] in dict)) dict[vars[i][0]] = vars[i][1];
+						else if (vars[i][0] == "shpp") {
+					var currentValue = Number(dict[vars[i][0]]);
+					var newValue = Number(vars[i][1]);
+					if (!isNaN(currentValue) && (!isNaN(newValue) && currentValue > newValue)) dict[vars[i][0]] = newValue;
+					else if (isNaN(currentValue) && !isNaN(newValue)) dict[vars[i][0]] = newValue
+				} else {
+					if (!paramsEligibleForCommaSeperatedList.indexOf1) {
+						paramsEligibleForCommaSeperatedList.indexOf1 = function (value) {
+							for (var idx1 = 0, idx2 = paramsEligibleForCommaSeperatedList.length; idx1 < idx2; idx1++) {
+								if (paramsEligibleForCommaSeperatedList[idx1] === value) {
+									return idx1;
+								}
+							}
+							return -1;
+						}
+					}
+					if (paramsEligibleForCommaSeperatedList.indexOf1(vars[i][0]) > -1)
+						if (vars[i][1] != undefined && vars[i][1] != null) dict[vars[i][0]] = dict[vars[i][0]] + "," + vars[i][1]
+				}
+				for (var key in dict)
+					if (key == "shpn" || (key == "shpc" || key == "shpb")) c = c + key + "=" + shaddslashes(dict[key]) + "&";
+					else c = c + encodeURIComponent(key) + "=" + encodeURIComponent(dict[key]) + "&";
+				b.type = "text/javascript";
+				b.src = (document.location.protocol==="about:"||"https:"===document.location.protocol?"https://":"http://") + c.slice(0, -1);
+				f.parentNode.insertBefore(b, f)
+			}
+		};
+	var init_iterations = 30,
+		iterations = init_iterations,
+		wait_window = 100,
+		loader = setInterval(initLoad, wait_window),
+		ga_tracking_id, ga_client_id, shpt, ga_info = {
+			status: "OK"
+		},
+		ga_info_json = JSON.stringify(ga_info),
+		execution_workflow = {},
+		message;
+
+	function getTrackingIdByGA() {
+		try {
+			var b = null;
+			var a = "";
+			execution_workflow.getTrackingIdByGA = "FAILED";
+			ga(function () {
+				b = ga.getAll();
+				for (var d = 0; d < b.length; d++) {
+					if (a.indexOf(b[d].b.data.values[":trackingId"]) == -1) {
+						a += ";" + b[d].b.data.values[":trackingId"]
+					}
+				}
+				ga_tracking_id = a.substring(1, a.length);
+				if (ga_tracking_id !== undefined) {
+					execution_workflow.getTrackingIdByGA = "OK"
+				}
+			})
+		} catch (c) {
+			execution_workflow.getTrackingIdByGA1 = "FAILED";
+			try {
+				b = __gaTracker.getAll();
+				for (var d = 0; d < b.length; d++) {
+					if (a.indexOf(b[d].b.data.values[":trackingId"]) == -1) {
+						a += ";" + b[d].b.data.values[":trackingId"]
+					}
+				}
+				ga_tracking_id = a.substring(1, a.length);
+				if (ga_tracking_id !== undefined) {
+					execution_workflow.getTrackingIdByGA1 = "OK"
+				}
+			} catch (c1) {
+				ga_tracking_id = undefined;
+				message = c1	
+			}
+		}
+	}
+
+	function getTrackingIdByOther() {
+		try {
+			execution_workflow.getTrackingIdByOther1 = "FAILED";
+			ga_tracking_id = _gat.bb;
+			if (ga_tracking_id !== undefined) {
+				execution_workflow.getTrackingIdByOther1 = "OK"
+			}
+		} catch (b) {
+			try {
+				var a = "";
+				execution_workflow.getTrackingIdByOther2 = "FAILED";
+				if (gaData !== undefined || gaData !== null) {
+					for (key in gaData) {
+						if (a.indexOf(key) == -1) {
+							a += ";" + key
+						}
+					}
+					ga_tracking_id = a ? a.substring(1, a.length) : undefined;
+					if (ga_tracking_id !== undefined) {
+						execution_workflow.getTrackingIdByOther2 = "OK"
+					}
+				}
+			} catch (b) {
+				ga_tracking_id = undefined;
+				message = b
+			}
+		}
+	}
+
+	function getClientIdByTracker() {
+		try {
+			execution_workflow.getClientIdByTracker = "FAILED";
+			ga(function (b) {
+				ga_client_id = b.get("clientId")
+			});
+			if (ga_client_id !== undefined) {
+				execution_workflow.getClientIdByTracker = "OK"
+			}
+		} catch (a) {
+			ga_client_id = undefined;
+			message = a
+		}
+	}
+
+	function getClientIdByGA() {
+		try {
+			execution_workflow.getClientIdByGA = "FAILED";
+			ga(function () {
+				var d = ga.getAll();
+				var c, b;
+				for (c = 0, b = d.length; c < b; c += 1) {
+					if (d[c].get("trackingId") === ga_tracking_id) {
+						ga_client_id = d[c].get("clientId")
+					}
+				}
+			});
+			if (ga_client_id !== undefined) {
+				execution_workflow.getClientIdByGA = "OK"
+			}
+		} catch (a) {
+			ga_client_id = undefined;
+			message = a
+		}
+	}
+
+	function getClientIdByGAData() {
+		try {
+			execution_workflow.getClientIdByGAData = "FAILED";
+			var b = null;
+			var a = "";
+			ga(function () {
+				b = ga.getAll();
+				for (var d = 0; d < b.length; d++) {
+					if (a.indexOf(b[d].b.data.values[":clientId"]) == -1) {
+						a += ";" + b[d].b.data.values[":clientId"]
+					}
+				}
+				ga_client_id = a.substring(1, a.length)
+			});
+			if (ga_client_id !== undefined) {
+				execution_workflow.getClientIdByGAData = "OK"
+			}
+		} catch (c) {
+			ga_client_id = undefined;
+			message = c
+		}
+	}
+
+	function getClientIdByCookie() {
+		try {
+			execution_workflow.getClientIdByCookie = "FAILED";
+			var b = document.cookie.split("__utma")[1].split(";")[0].split(".");
+			ga_client_id = b[1] + "." + b[2];
+			if (ga_client_id === undefined) {
+				execution_workflow.getClientIdByCookie = "OK"
+			}
+		} catch (a) {
+			ga_client_id = undefined;
+			message = a
+		}
+	}
+
+	function initLoad() {
+		iterations--;
+		if (iterations < 1) {
+			clearInterval(loader);
+			var a = "Could not evaluate some of the GA parameters due to timeout reached (" + (init_iterations * wait_window) + "ms). Check the execution_workflow for details.";
+			LOG_ERRORS(execution_workflow, a)
+		}
+		execution_workflow.iteration = (30 - iterations);
+		loadGAData()
+	}
+
+	function loadGAData() {
+		var b = window.ga || window.__gaTracker;
+		if (ga_tracking_id === undefined) {
+			getTrackingIdByGA();
+			if (ga_tracking_id === undefined) {
+				getTrackingIdByOther()
+			}
+		}
+
+		if (ga_tracking_id !== undefined) {
+			(function (i, s, o, g, r, a, m) {
+				i["GoogleAnalyticsObject"] = r;
+				i[r] = i[r] || function () {
+					(i[r].q = i[r].q || []).push(arguments)
+				}, i[r].l = 1 * new Date();
+				a = s.createElement(o),
+					m = s.getElementsByTagName(o)[0];
+				a.async = 1;
+				a.src = g;
+				m.parentNode.insertBefore(a, m)
+			})(window, document, "script", "https://www.google-analytics.com/analytics.js", "ga");
+			ga("create", ga_tracking_id, "auto");
+		} 
+
+		
+
+		if (ga_client_id === undefined) {
+			getClientIdByTracker();
+			if (ga_client_id === undefined) {
+				getClientIdByGA()
+			}
+			if (ga_client_id === undefined) {
+				getClientIdByGAData()
+			}
+			if (ga_client_id === undefined) {
+				getClientIdByCookie()
+			}
+		}
+		if (shpt === undefined) {
+			try {
+				execution_workflow.shpt = "FAILED";
+				shpt = document.querySelector("title").textContent.replace(/[,;]/g, "").trim();
+				if (shpt !== undefined) {
+					execution_workflow.shpt = "OK"
+				}
+			} catch (a) {
+				shpt = undefined;
+				message = a
+			}
+		}
+		if (ga_tracking_id !== undefined && ga_client_id !== undefined && shpt !== undefined) {
+			ga_info.status = "OK";
+			ga_info.ga_tracking_id = ga_tracking_id;
+			ga_info.ga_client_id = ga_client_id;
+			ga_info.shpt = shpt;
+			ga_info.execution_workflow = execution_workflow;
+			ga_info.message = message;
+			clearInterval(loader);
+			ga_info_json = JSON.stringify(ga_info);
+			fireLoad()
+		}
+	}
+
+	function LOG_ERRORS(b, a) {
+		ga_info.status = "FAILED";
+		ga_info.ga_tracking_id = ga_tracking_id;
+		ga_info.ga_client_id = ga_client_id;
+		ga_info.shpt = shpt;
+		ga_info.execution_workflow = b;
+		ga_info.message = a;
+		clearInterval(loader);
+		ga_info_json = JSON.stringify(ga_info);
+		fireLoad()
+	}
+
+	function fireLoad() {
+		setTimeout(function () {
+			load([['ga_tracking_id', ga_tracking_id],['ga_client_id', ga_client_id],['shpt', shpt],['ga_info', ga_info_json],['shaid', '19970'],['tdr', 'https:\/\/www.overstock.com\/Home-Garden\/Kids-Beds\/6407\/subcat.html?TID=KidsFurnSP:00:Left-nav-1:KidsToddlerBeds'],['plh', 'https:\/\/www.overstock.com\/Home-Garden\/Mattresses\/Kids-Mattresses,\/other-types,\/2019\/subcat.html?TID=KidsBeds:00:leftnav-6:KidsMattresses'],['dxver', '4.0.0'],['cb', '76456008653607840'],['shadditional',arbitraryJSCode('var audience_type=null;var sku=document.querySelector("#_3tYIAdE > p:nth-child(4)").textContent.split(":")[1].trim(); var ameriwood_skus = ["17737467","17737469","20561911","18824462","16846030","17291980","19248759","20439688","28391392","22357483","24380109","28391392","17650745","25574269","19442407","19267676","17243052","17650742","17688695","22357485","24380104","18037047","18037049","20668219","25574269","24380104","17734225","17737466","24380109","19348610","23827787","24380104","16088930","16814516","18033417","19442406","22357486","22357485","25554933","15588633","16832081","17451002","15707938","16101068","17316871","17510735","17632806","18033418","18037046","19163201","20742489","16249914","16832004","17463167","17510720","17632828","17638820","18008482","18058723","19266028","22525637","17501175","17734225","18037045","18052419","18180966","19270017","20561930","23827788","26934037","26963781","27629000","28438767","14785616","17632807","17983739","18052420","18875616","19442404","20005347","20655887","23494079","25623642","26963781","14785195","15326980","16249974","16814515","17415534","17638822","19195050","26153141","24380106","24380109","15004708","16095043","16181285","16271069","17632831","18910592","19442370","22569120","25247567","25522184","25623646","25623648","25892333","25623648","16846029","17443356","18924310","19270018","19318583","19399233","19442372","20464915","23073580","24709752","25554932","14981123","15857990","16249914","16271068","16833950","17260834","17425309","17622586","17632829","18824652","19408216","19442408","22357485","23061956","23304899","23827814","25522184","26132717","26963604","27168430","24380106","27629000","28438316","14803736","14805943","15300716","15437246","15658488","16099522","16100761","17632811","17638819","18052423","18079081","18537586","19045680","19163200","19528945","19901464","20163780","20655887","20742488","22357226","22357486","22464371","22488978","22525638","22569120","23277079","23672396","23827787","23827786","24380106","24380109","25236405","23494079","25622141","25623031","25774982","25892331","25892333","26441789","27546683","15572180","15835124","16092685","16249914","16817761","16847362","17357018","17411375","17415534","17638818","18096049","18537587","18545103","18896775","19270016","19442405","19743767","20005347","20005347","20005348","20561912","20678357","16847362","22062727","22062750","22357485","22525636","22546289","22569119","22779887","23011368","23225137","23277129","23306705","23404249","23466620","23466620","23494042","23672396","23827788","23827788","23992441","25236405","25497089","25574270","25574270","25622391","25623645","25623644","25774980","25774980","25775025","25892334","25892354","25898952","26153441","26934036","26934338","27149525","27629000","15300717","15670732","15725617","16085559","16099629","16104491","16104574","16114924","16271075","16937824","17148556","17257104","17415534","17425311","17447606","17501176","17510730","17737470","17768078","18033366","18052432","18052431","18097517","18180147","18877851","18917087","19203232","19250171","19318585","19408214","19408217","19442635","19743763","20005348","20143368","20439687","20742490","22327985","22357483","22488643","22488666","22569118","19195002","22779887","22862186","22862186","23073580","23119917","23277079","23283641","23404249","23404249","23404345","23827786","24023973","24023974","24281611","24709752","25015904","25237010","25522184","25622139","25623641","25623643","25623647","25632978","17415534","25759500","25892333","26243611","27168430","27629208","27903455","28391391","28438765","28608297","14803668","14803666","14946720","14946721","15035217","15275739","15295350","15416294","15665867","15881094","16083180","16099366","16104492","16104881","16271070","16814514","16833949","16837541","16844209","17125035","17150267","17316870","17429169","17429170","17443352","17443355","17510716","17510725","17510729","17510736","17510737","17622585","17632809","17983742","18052430","18079079","18079083","18807348","18807387","18858765","18910594","18917082","19195000","19318582","19442368","19442371","19442373","19743763","19743767","20005348","20099816","20464937","20561910","20686476","20878026","21847164","21887224","22357226","22357226","22357486","22357483","22463065","22463065","22488642","22546289","22569118","22569118","22569119","22569119","22779887","23225115","23277130","23277130","23277249","23283641","23283751","23283752","23304744","23304747","23304741","23304742","23304899","23304900","23309683","23404251","23827787","23827786","24023975","24023974","24228216","24249743","24267121","24268392","24378007","24380108","24648134","24709752","25244408","25244408","25396360","25497089","25497091","23304555","25518757","25518759","25518760","25554851","25554937","25554943","25554944","25622138","25622140","25622141","25622390","25623315","25632977","25774979","25774982","25892268","25892331","25892332","25892332","25892334","25892333","25892354","25898952","25898952","25015904","26441789","23404249","26934339","26963602","26963603","26963608","27165875","27207216","27629815","28145463","28322879","25237010","28391325","28391391","28438765","28438765","28438768","28438766","28439683","28439896","28613406","14786895","14803667","15137269","15245639","15275740","15286741","15290944","15300716","15326979","15414893","15414893","15639528","15717186","15725618","15414893","15414893","15414893","15881107","16082665","16083178","16083179","16085559","16098328","16099367","16099407","16099499","16099589","16099628","16099615","16104880","16104916","16104915","16260898","16271068","16271075","16276636","16812085","16814517","16832082","16839562","16840360","16840525","16932245","16991619","17125035","17146999","17175506","17175506","17260836","17260835","17357017","17429167","17429168","17443351","17443350","17451003","17493027","17493028","17493029","17510715","17510719","17510721","17510726","17510731","17510732","17510733","17510734","17510739","17510740","17524210","17524213","17632808","17632810","17638821","17678182","17678183","17678184","17682478","17697142","17737468","17768077","17768079","17768080","17791729","17879532","18033419","18037048","18052427","18052428","18052429","18058722","18063057","18076859","18076860","18076861","18078860","18079080","18079082","18079084","18079089","18137410","18180965","18181353","18180144","18545138","18545396","18633617","18807388","18838736","18838925","18876859","18910595","18910593","18917081","18917083","18917084","19064109","19195001","19195003","19195004","19313672","19313673","19318584","19327003","19355276","19399232","19408215","19408218","19408231","19408237","19442238","19442369","19442636","19442637","19446714","19491877","19743764","19901464","19901464","20033356","20439687","20439687","20447899","20464935","20655887","20655887","20655887","20763783","20878026","20878026","21847164","22062751","22296969","22357226","22463064","22463064","22463064","22463065","22464371","22488643","22488642","22488977","22488977","22546289","22568945","22568945","22569120","22779887","22921629","22921629","23061956","23061956","23073580","23225114","23225136","23225138","23225138","23277080","23277080","23277081","23277081","23277130","23277129","23283641","23283641","23283751","23283750","23283752","23283754","23283753","23283753","23283753","23283753","23297884","23304555","23304744","23304745","23304746","23304743","23304743","23304902","23304900","23304901","23304903","23304903","23306705","23306706","23307012","23404251","23404250","23404250","23404345","23466621","23494042","23718608","23718608","23718610","23718610","23827814","23827814","23827815","23864928","23875540","23875539","23875539","23885609","23885609","23885609","23885609","23885609","23959021","23959021","23992441","24016538","24023973","24023973","24023975","24023975","24023974","24024008","24024008","24024008","24249743","24249743","24249743","24249743","24249743","24267122","24267122","24267122","24268392","24268392","24281611","24281611","24281611","24355385","24355453","24378007","24378007","24378007","24378007","24380106","24380108","24643649","24694877","24708021","24708017","24708018","24708019","24708020","24708032","24708698","24714485","24806371","24806371","25237010","25237892","25237892","25247567","25396360","23283641","25497091","23304742","23304746","23304902","25518758","25518758","25518759","25518760","25518760","25554851","25554852","25554852","25554852","25554939","25554939","25554932","25554934","25554935","25554935","25554936","25554937","25554938","25554942","25554944","25554945","25554946","25554946","25574268","25619587","25619587","25619588","25619588","25622139","25622142","25622390","25632978","25632978","17415534","25759501","25774979","25775024","25775107","25884397","25884397","25892268","25892332","25892332","25892332","25892334","25892334","25892333","25898952","25898952","25898953","25898953","25918816","25918816","25968164","25968165","25968165","26153141","26153141","26221739","25015904","26441789","26441789","26441789","26711930","26711930","26711929","26711929","26934035","26934586","26934702","26963605","26963606","26963607","26963609","27149524","27165873","27167889","27167889","27167888","27167888","27207216","27221010","27221010","27221253","27221253","27262479","27262479","27269282","27269282","27498931","27501880","27501976","27504828","27504828","27546684","27546685","25574268","25623646","25623641","25623643","25632977","24380104","27628814","27628813","27628815","27628816","27628812","27629208","27684046","27695425","27903451","27903451","27903452","27903452","27903453","27903453","27903454","27903455","27909804","28145464","28145466","28145465","28145465","28312737","28322880","25237010","28391297","28391297","28391297","28391297","28391297","28391297","28391297","28391297","28391297","28391326","28391326","28391324","28391324","28391324","28391325","28391390","28391390","28391391","28391393","28391393","28391686","28391686","28391686","28391687","28391687","28391687","28397907","28397950","28397950","28397950","28400424","28400450","28400451","28400452","28400475","28400475","28400475","28400475","28400475","28400475","28400544","28400617","28400616","28400618","28400619","28400619","28402371","28402371","28402371","23283753","23297884","28408494","28438315","28438759","28438760","28438764","28438761","28438765","28438763","28438762","28439685","28439684","28439686","28491352","28491352","28491354","28491355","28491355","28491356","28491356","28491353","28540530","28540530","28608298","28613404","28613404","28613404","28613403","28613405","28623443","28654798","28654797","28669973","28669973","28669973","28669972","28669972","28669972","28669972","28669974","28669975","28669975","28669976","28670087","28670083","28670083","28670083","28670084","28670084","28670084","28670085","28670086","28670088","28671417","28671418","28671423","28671419","28671420","28671421","28671422","28671422","29021375","29021375","29021376","29021376","29021377","29021377","29021374","29021374","29049169","29049169","29049170","29049170","29049346","29049347","29049347","29049347","29049347","29049348","29049345","29049345","29049349","29049484","29049485","29049485","29049485","29049486","29049718"]; for(var i =0; i<ameriwood_skus.length; i++){if(sku==ameriwood_skus[i]){audience_type="audience_type=ameriwood_audience";break;}};audience_type;')],['shadditional',arbitraryJSCode('var audience_type=null; if(window.location.href.indexOf("https://www.overstock.com/Home-Garden/Garden-Patio/84013,/vendorid,/4/dept.html")>-1){audience_type="audience_type=dropship";};audience_type;')],['shadditional',arbitraryJSCode('/*Fires brand var additional on cart page*/if(window.location.href.indexOf("/cart")>-1){var cart_brand = null; var brandList = ["Bush Furniture","Magnussen Home Furnishings","Westfield","Coaster Company","HomePop","OSP Home Furnishings","Picket House","Simple Living","Slumber Solutions","Christopher Knight Home","Madison Park","Furniture of America","Hillsdale","iNSPIRE Q","Mohawk","Nourison","Nuloom","Polywood","RST Brands","Safavieh","Serta","Corvus","South Shore","Harper Blvd","VONN Lighting","Powell","Exclusive Fabrics","Hanover","Highwood","Sealy","Simmons","Abbyson","Auriya","Miadora","Annello","Alexander Home","Unique Loom"]; var cartBrands = ""; var aA = document.querySelectorAll("div.cart-items-wrap > div > div > div.item-details > div.item-title"); for (var i = 0; i < aA.length; i++) { cartBrands = cartBrands.concat(aA[i].textContent.toLowerCase().trim()); } if (cartBrands) { for (x = 0; x < brandList.length; x++) { if (cartBrands.indexOf(brandList[x].toLowerCase())>-1) { cart_brand += ",cart_brand=" + brandList[x].toLowerCase().replace(/[ ]+/g,"_").trim(); } } } if(cart_brand === null){cart_brand}else if(cart_brand.indexOf("null")>-1){cart_brand = cart_brand.split("null,")[1];}else{cart_brand;}}else{"cart_brand=nothing"}')],['shadditional',arbitraryJSCode('if(window.location.href.includes("/Home-Garden/")){var url = window.location.href; var additional = null; var productsArray = ["/Abbyson-Holloway-Mid-Century-Top-Grain-Leather-Pushback-Recliner/","/Abbyson-Holloway-Mid-Century-Leather-Sofa-And-Recliner-Set/21131766/","/Abbyson-Holloway-Mid-Century-Top-Grain-Leather-Sofa/","/Abbyson-Holloway-Mid-Century-Top-Grain-Leather-Sofa-And-Armchair-Set/","/Abbyson-Holloway-Mid-Century-Top-Grain-Leather-3-Piece-Recliner-Set/","/Abbyson-Holloway-Mid-Century-Top-Grain-Leather-Armchair/"]; for(productUrl of productsArray) { if(url.indexOf(productUrl)>-1){additional = "abbyson_holloway_mid_century=true";}}additional;}else{null}')],['shpic',arbitraryJSCode('var block=1; if(document.querySelector("#addToCartForm > div.value-message-container.row > div > div.message.danger.out-of-stock-label")){if(document.querySelector("#addToCartForm > div.value-message-container.row > div > div.message.danger.out-of-stock-label").textContent=="Out of Stock"){block=0;}};if(s.currencyCode != "USD"){block=0;};if(document.querySelector("section.out-of-stock")){if(document.querySelector("section.out-of-stock > section > div").textContent=="Out of Stock"){block=0;}};if(document.querySelector("#add-to-cart-button-region > section > div > div > span > a")){if(document.querySelector("#add-to-cart-button-region > section > div > div > span > a").textContent=="Add to cart to see price"){block=0;}};if(document.querySelector("#ob-pricing > div > span")){if(document.querySelector("#ob-pricing > div > span").textContent=="Add to cart to see price"){block=0;}};if(document.querySelector("#value-message-container > div > div")){if(document.querySelector("#value-message-container > div > div").textContent.trim().toLowerCase()=="out of stock"){block=0}};if(document.querySelector("#_35h6IA9 > section > section > section > div")){if(document.querySelector("#_35h6IA9 > section > section > section > div").textContent.toLowerCase().trim()=="out of stock"){block=0;}};block;')],['shpi',arbitraryJSCode('if(window.location.host !== "safavieh.com" && window.location.host.indexOf("overstock.ca")==-1){var image=null; var aA = ["#image-gallery > div._2Zpskyg > div > div > img"]; for( var i = 0; i < aA.length; i++ ){ if(document.querySelector(aA[i])){ image = document.querySelector(aA[i]).src; break; } };image;};')],['shadditional',arbitraryJSCode('if(window.location.href.indexOf("/orderprocessed")>-1){var order_cats="";for(var i = 0; i < ostk.data.track.orderData.products.length; i++){for(var x = 0; x < ostk.data.track.orderData.products[i].taxonomy.length; x++){if(x%4==0){order_cats+=",order_cats="+ostk.data.track.orderData.products[i].taxonomy[x].displayText;}else{order_cats+=","+ostk.data.track.orderData.products[i].taxonomy[x].displayText;}}};order_cats.substring(1, order_cats.length)}')],['shpc',arbitraryJSCode('/*updated category on 3-28-18 to check the product name for Comforpedic*/ var cat = "";var aA = document.querySelectorAll("#breadcrumbSection > span > a");for(var i = 0; i < aA.length; i++){cat += ","+aA[i].textContent.trim();}cat = cat.substring(1, cat.length); var r = /[0-9]+/g; var itemNumber; var OverstockSkus=["24203175","24203176","24203177","24203178","24203179","24203180","24203181","24203182","24203183","24203199","24203200","24203201","24203202","24203203","24203204","24235394","24235395","24235396","24235397","24235398","24235399","24235400","24235401","24235402","24235403","24235404","24235405","24235406","24235799","24235802","24238794","24238795","24240962","24241400","24241511","24241512","24241513","24241613","24241614","24241615","24241616","24241784","24260984","24260985","24261001","24275823","24275824","24275825","24275826","24275827","24275833","24275834","24275835","24275836","24275837","24275838","24275839","24275840","24276361","24276362","24276363","24276364","24276365","24276366","24276367","24276368","24276369","24276373","24330709","24330926","24330928","24356906","24356907","24356908","24356909","24356950","24356951","24356952","24356953","24356954","24356955","24356956","24356957","24356958","24356959","24356960","24356961","24356962","24356963","24356964","24356965","24356966","24359870","24641356","24641366","24641367","24641368","24641369","24641370","24641371","24641379","24641380","24641381","24641382","24641383","24641384","24641385","24641386","24641387","24641388","24641389","24641422","24641423","24641424","24641425","24641426","24641427","24641428","24641429","24641436","24644043","24644044","24644045","24644046","24644047","24644048","24644049","24644050","24644051","24644289","24644290","24644291","24644292","24644293","24644294","24644295","24644296","24644297","24644298","24644357","24644358","24644359","24644360","24644361","24644362","24644363","24676872","24872965","24891356","24891357","24891504","24891505","24891506","24891508","24910474","24910475","24910476","24910477","24910478","24910479","24910480","24910915","24910916","24910917","24910918","24910919","24910920","24910921","24911184","24911185","24911186","24911187","24911188","24938377","24938378","24938379","24938380","24938381","24938382","24938383","24938384","24938385","24938387","24938388","24938425","24938426","24938427","24938428","24938429","24938430","24938431","24938432","24938433","24938434","24939024","24939025","25553564","25553568","25553569","25553570","25553593","25553594","25553606","25553607","25553639","25553814","25553815","25576203","25576219","25576220","25576221","25576222","25576231","25576232","25576233","25619197","25619198","25619200","25619201","25619202","25619203","25619204","25619205","25619683","25619684","25619685","25619686","25619687","25620037","25620038","25620040","25620041","25621286","25789154","25789155","25789156","25789157","25789158","25789159","25789160","25789161","25789162","25789164","25789165","25789166","25789167","25789168","25803049","25811236","25900250","25900251","25900252","25908069","25908070"];mapName = (arrayOfSelectors) => { let name = null; let aA=arrayOfSelectors; for(let i = 0; i < aA.length; i++){ if(document.querySelector(aA[i])){ name=document.querySelector(aA[i]).textContent.trim();} } return name }; var checkName=mapName(["div > h1"]); if(document.querySelector(".item-number")){itemNumber=document.querySelector(".item-number").textContent.match(r).join("");} for(var OverstockSku of OverstockSkus){if(OverstockSku===itemNumber){`${cat},mohawk_product_line`;break;}else if(checkName){if(checkName.indexOf("ComforPedic")>-1){cat=cat+",Comforpedic";break;}}else{cat=cat}};cat;')],['shpp',arbitraryJSCode('utag.data.product_unit_price[0].replace(/[$,]/g,"")')],['shcp',arbitraryJSCode('if(window.location.href.indexOf("/cart")>-1){utag.data.product_sku.join(",")}')],['shcq',arbitraryJSCode('if(window.location.href.indexOf("/cart")>-1){utag.data.product_sku.length}else{mapCartQuantityFromIcon = (arrayOfSelectors) => {let quant=null; let aA=arrayOfSelectors; for(let i = 0; i < aA.length; i++){if(document.querySelector(aA[i])){quant=document.querySelector(aA[i]).textContent.trim();}}return quant};mapCartQuantityFromIcon(["#mini-cart-qty"])}')],['shadditional',arbitraryJSCode('var audience_type=null;var sku=document.querySelector(""#_3tYIAdE > p:nth-child(4)"").textContent.split(":")[1].trim(); var cdecor_skus = ["19671925", "19671927", "19671926", "17742778", "17207480", "17742777", "17684004", "25459532", "17502618", "19687046", "17207461", "19720271", "24694026", "17471946", "19671827", "17585164", "16626965", "24174800", "21584104", "24644429", "25451089", "21584920", "16586582", "25450547", "17566243", "21584099", "23103503", "17689920", "17443064", "17443190", "17652295", "17566208", "17566205", "17542447", "24694920", "16627124", "18693570", "17086287", "25450548", "17683939", "19720270", "17090053", "17161335", "28994627", "18693588", "17813451", "24174737", "17689923", "17813495", "18336286", "26492660", "20487012", "24174799", "25450783", "17689921", "17443239", "17405051", "17502619", "17497154", "23103504", "23103505", "19687015", "18910210", "19687014", "17411434", "26492568", "28158363", "17684003", "24282007", "20254012", "17683983", "17566206", "17566255", "24174795", "27628455", "23102696", "17566201", "25437590", "17584967", "17813450", "27421838", "19671892", "17161336", "17654030", "26492565", "16995049", "17197007", "17566217", "24174815", "19720018", "26910971", "18336289", "17566224", "28190332", "12941822", "17197069", "17683938", "25437604", "24174816", "25450550", "25459454", "21584922", "18496365", "26955290", "22328036", "24174803", "24694027", "18693562", "25450782", "17566209", "26936007", "17689897", "17405067", "14776402", "20254010", "17402060", "26492564", "18297793", "17542739", "17566204", "18693555", "17813447", "25437589", "25437606", "17813496", "24298546", "17683984", "25450778", "17204763", "14110846", "16586585", "17405066", "17161334", "17684001", "25450780", "21583976", "25450781", "17813448", "15961848", "26907274", "24644428", "20843403", "19720017", "19671828", "17689900", "17196201", "28159418", "20843399", "18496374", "19687013", "22328062", "24643960", "12941821", "18336281", "27998838", "21584101", "21584103", "17086288", "27263490", "25450779", "18380904", "22328034", "16995055", "16727794", "16586592", "19720016", "17566213", "17355099", "27859433", "19720019", "18496367", "17195983", "18336290", "28159417", "17090055", "28958908", "17683936", "27421837", "26910970", "20620426", "17410689", "26492439", "16623968", "18693583", "20843583", "25437692", "24695110", "26492210", "17391929", "17566253", "14110847", "17654035", "20843580", "28661955", "21583977", "17443608", "16586589", "20843401", "17090054", "27998839", "20843581", "17689985", "17813497", "18693589", "20487070", "17584923", "21583975", "27999636", "22328236", "17410862", "20487014", "18693569", "20843404", "15961324", "18693559", "22328234", "18336291", "20843585", "22328239", "24694919", "20843582", "20620925", "20834826", "20834834", "20843584", "17405050", "15988864", "20843402", "24694724", "17566251", "22328238", "20834825", "18693590", "20487010", "20620927", "17566257", "17419212", "20486653", "17391928", "18336284", "17410747", "17443594", "20620425", "20843396", "20843400", "17689987", "23102667", "15988863", "28129786", "15961989", "20834824", "20834823", "17471932", "20834822", "21584100", "20620427", "17391943", "16626964", "16627104", "16627103", "16995051", "16995050", "17652297", "17683940", "17689922", "23103551", "23103549", "23103552", "17654032", "21584918", "18336280", "18336283", "18336285", "18496359", "17566211", "17566216", "17566236", "20487009", "17405118", "17584968", "20486652", "20843952", "20843953", "17413946", "16995053", "16995054", "17196386", "17207396", "17355098", "17391937", "18693554", "18693557"]; for(var i =0; i<cdecor_skus.length; i++){if(sku==cdecor_skus[i]){audience_type="audience_type=cdecor_audience";break;}};audience_type;')],['shadditional',arbitraryJSCode('var audience_type=null;var sku=document.querySelector(""#_3tYIAdE > p:nth-child(4)"").textContent.split(":")[1].trim(); var dhp_skus = ["16656449","19267689","20615042","17622592","20676487","19053452","25803396","17603237","16970636","17336508","21062689","16868944","17626603","22921523","23980354","17587402","27504827","11721855","16869282","17603238","22930391","20615042","22921525","26156767","11721855","17243057","17603236","18875378","21271929","20615042","23960040","25450243","25803396","16970634","18037158","18679992","18882393","19488971","19770586","22921807","23902777","25450243","16898358","17316872","20088535","22921523","24648501","26180894","26544953","16970635","17610071","18025064","18807880","24250094","27504827","16328337","16434863","16853187","17336506","18025063","19267515","22929743","22932043","23061957","23061957","23061958","23980354","27559723","11721855","16610627","16614067","17524214","17837330","18037157","18469420","18882395","19005305","19531194","19770586","20626517","16305417","18877008","22066175","20615042","22744839","22920965","22929999","23061955","23494239","23960040","23960040","24249991","23980354","16970634","16898356","17316872","17622582","17638816","18875373","18875376","19051777","22921522","22932043","23061958","23873510","24249745","25963762","16304070","16434862","16446321","16610553","16614067","17622589","17837330","17837330","18875374","19051334","19751264","21677519","21677519","21737604","22669391","22921806","22930389","23594569","23594571","23960142","24648501","26219215","26657555","26774617","16970634","27903689","16415025","16415051","16610627","16614039","16614068","16614067","16729348","16729348","16924302","16924924","17336509","17587404","17587416","18469418","18469486","18613070","19267517","19770396","22921523","23017840","23061074","23541552","23541552","23960139","23960140","23960142","24016566","24249741","24249745","24249990","20615042","25963758","23980354","26720469","26720469","26720469","26774147","27308587","24016566","16322106","16446321","16614064","16614088","16614088","16920578","17336507","17429174","17429184","17493030","17587419","17622583","17626604","17638815","17659441","17734226","17793328","18875377","18994276","19267688","19549887","19745610","19751264","19997570","20126664","20292317","20615043","20626516","20034925","22669391","20615042","22920965","19549887","23063924","23073579","23541551","23960141","24016540","24016536","24024005","24024012","24249741","24249742","24249744","24249744","24249745","24249746","24249746","24249991","24648460","25450241","26180399","26180446","26353879","26633086","26657555","23980354","26720469","26720469","22921522","27504827","28473555","28473555","16304069","16316817","16328334","16328337","16415025","16415050","16614039","16614039","16614066","16614063","16672314","16924400","16924926","16925628","16928267","17415529","17429171","17429172","17429173","17524215","17587403","17587417","17587421","17622581","17622588","17659444","17793327","18679991","18797368","18838650","18838733","18875380","19035792","19488834","19488835","19737735","19770397","19770397","20002767","20002767","20034925","20088534","20292315","20615043","20626518","20844426","20034925","21122849","21270172","21271930","21737126","16928267","22554178","22654696","22701892","22752077","22920965","22921522","17336506","21271930","19299022","23013400","16868944","23052412","23283657","23494238","23494239","23541551","23594570","23594572","23594575","23873509","23960139","23960140","23980361","24016203","24016539","24016534","24016536","24016537","24024006","24024006","24024007","24242123","24249742","24249744","24249746","24648460","25327943","25450242","26144825","26219252","24016566","26353879","26633084","26657555","26697553","26720468","26725855","26766695","26774515","26774617","26774651","26946651","24016566","24016566","24016566","27504827","27559724","27903454","28440904","28473560","28473555","28473555","28473556","28473557","28473557","28473559","28473690","28476303","16302895","16302894","16302896","16304075","16304071","16304071","16304071","16304074","16305417","16322106","16325204","16328334","16328336","16339747","16339747","16415048","16415048","16415048","16415050","16415050","16446322","16446322","16614068","16614065","16614065","16614062","16620669","16621370","16636952","16643163","16672313","16693244","16734687","16869281","16898357","16913795","16924303","16924304","16924927","16925630","16925630","16925627","16925627","16925628","16925629","16925629","16925632","16925632","16928267","16991497","16991497","17071914","17085305","17085321","17125407","17125407","17125407","17125408","17243054","17243055","17243059","17243061","17243063","17257105","17284780","17284780","17291981","17415530","17415530","17415531","17429175","17429179","17429180","17429180","17429181","17429183","17429184","17493031","17524215","17587415","17587418","17587420","17603233","17603235","17603239","17610070","17610074","17622584","17622591","17622593","17638817","17643292","17650747","17650748","17659441","17659441","17724636","17724637","18036193","18036194","18462088","18469485","18486971","18629803","18679990","18838217","18838544","18838646","18838651","18875375","18875379","18877008","18897466","18897467","18897669","18897670","18897668","18917089","18938239","18966412","18966505","18980603","19003638","19003639","19006008","19038833","19038900","19057577","19195872","19245061","19245060","19267516","19299023","19299022","19656903","19656903","19656966","19656966","19656966","19751264","19770397","19770396","19783187","19783670","19783670","19886070","19965012","19965012","19997570","20088533","20088534","20088536","20088537","20088537","20292259","20626517","20626518","20626723","20626723","20690489","21035915","21035916","21114741","21114746","21122849","21131811","21131811","21271930","16925628","16925628","21677519","16434862","16924927","21737604","21737604","21745320","22070499","22070499","16898357","16898357","16928267","17587421","17587421","17587421","17587418","17587418","17587418","22527346","22527346","22554178","22654696","22701892","22752077","22752077","22920965","22921522","22921524","22921805","22929742","22929998","22930390","21271930","21271930","21271930","22959474","22959475","22959475","23013600","17336508","23052758","23052758","23072032","23073579","23073755","23073755","23119164","23304233","19584508","23404070","23404070","23494238","23494238","23494239","23494240","23594568","23594573","23594574","23718609","23718609","23718609","23959425","23960041","23960040","23960042","23960043","23960122","23960141","23980354","23980355","23980355","23980361","23998124","23998124","23998124","24016535","24016535","24016537","24024009","24024005","24024006","24024006","24024010","24024010","24024011","24024011","24024007","24024007","24024007","24024007","24024007","24024012","24157351","24157352","24226602","24228217","24239843","24242123","24249741","24249744","24249989","24249989","24249990","24250156","24250156","24268393","24268393","24268393","24801312","24811877","25327943","25327943","25327943","25328089","25328288","25450240","25450241","25450241","25450242","25450242","25450242","25450242","25450242","25459354","25459354","25459354","25459354","20844426","25803396","23594570","23594570","23594570","23594574","23594574","23594574","19745610","19745610","26006319","26006319","26006319","23594572","23594572","23594572","26144825","26144825","26144825","26144825","26144825","26144825","26144825","26180398","26180398","26180399","26180446","26219251","23594569","26359723","26359723","22929742","26544952","26633084","26633085","26633085","26633086","26633086","26657554","26657554","26657554","26657554","26657554","26657555","23980354","23980354","23980354","26660581","26660582","22066175","22066175","26697552","26697551","26720467","26720469","26725855","26725855","26752631","26752631","26752631","26766695","26774147","26774514","24016566","24016566","24016566","24016566","26946651","26978463","26978463","26978463","26978463","26978463","26978463","26978463","26978463","26978463","26978463","26978463","26978463","27042810","27042810","27042809","27042809","27092834","27092834","27092834","27099670","26660582","26660582","26660581","26660581","21270172","21270172","27167599","27167599","22752077","26156767","24016566","24016566","27504827","27504827","27504827","27504827","27559722","27559725","28041697","28041695","28041696","28041698","28433635","28433636","28433752","28433754","28433756","28433758","28433761","28433753","28433755","28433757","28433759","28433760","28433762","28433751","28440892","28440893","28440906","28440909","28440897","28440912","28440899","28440894","28440907","28440908","28440895","28440896","28440910","28440911","28440898","28440913","28440900","28440901","28440903","28440914","28440902","28440915","28440916","28440917","28440905","28440949","28440950","28440951","28473020","28473021","28473554","28473554","28473554","28473554","28473554","28473554","28473560","28473560","28473560","28473560","28473560","28473553","28473553","28473553","28473553","28473553","28473553","28473561","28473561","28473561","28473561","28473561","28473561","28473555","28473555","28473552","28473552","28473552","28473552","28473552","28473552","28473556","28473556","28473556","28473556","28473556","28473557","28473557","28473557","28473557","28473558","28473558","28473558","28473558","28473558","28473558","28473559","28473559","28473559","28473559","28473559","28473562","28473562","28473691","28473691","28473691","28473691","28473690","28476303","28476303","28476303","28476303","28476303","28557080","28557081","28563431","28615395","28993776","28993776","28993783","28993783","28993784","28993784","28993778","28993779","28993779","28993780","28993780","28993781","28993781","28993782","28993782","28993777"]; for(var i =0; i<dhp_skus.length; i++){if(sku==dhp_skus[i]){audience_type="audience_type=dhp_audience";break;}};audience_type;')],['shadditional',arbitraryJSCode('var audience_type = null; var sku = document.querySelector(""#_3tYIAdE > p:nth-child(4)"").textContent.split(":")[1].trim(); var vifah_skus = ["13681652","14795705","11476397","14228961","12320168","17243507","14162505","17811811","18180857","12104955","14228966","14037715","16949439","18180852","17811812","26506957","16381972","18164264","14037712","16949383","22462817","13948699","18163683","18180869","18180854","18163684","14162509","14037714","18163682","14162507","16381970","11476399","18161721","18163677","14260124","15352521","14037710","15352522","26523799","18163675","17812502","26398219","14037707","15352523","15502870","12104964","14162512","12998748","12320185","11465489","17206327","14795703","11465493","18164268","18180862","18164266","12319141","14037704","18180868","17450135","18161722","18180870","14229392","18164270","11465494","14228964","17206328","14228963","11637790","11465496","14058764","27340236","26523768","14229395","14228971","17201700","17201629","18180864","18163681","11472234","18180853","12320166","22554398","18164263","18454766","14099084","18180855","11472228","12320184","18954433","27339962","17206815","18180861","12105162","17812503","18180867","17206717","11465491","17206329","14228970","11465525","18180859","18454580","17207420","19331835","18180851","11465526","26523806","14330043","18164269","16951024","16378170","14228968","14037709","24252927","18180866","14258492","11465492","17450132","12996538","11472224","18954462","14058756","18478592","12104961","14228967","14330042","15480663","18163678","14228965","14228993","14229027","18954418","14330041","18935495","18164267","18954413","13824727","15453807","18454765","12995590","18954435","14058752","24252929","17201462","15352524","15300772","26523075","31043287","12320186","18180860","18954456","18454675","17201508","17201503","17206325","24252926","14234459","12104962","15352530","11465497","11509991","14037706","26523169","18163676","26508011","18954415","18454682","18454579","18954432","14058751","17450141","17207419","14234460","14058750","14058759","17201719","15304652","17206643","17201758","12337570","31572230","14037703","18180856","18163680","14229023","13824763","18954412","18454681","14229393","18954485","14229317","18954457","14229009","14229015","14229468","24252925","18954436","18954468","14058758","18478608","17201519","26395336","18954503","14229472","15502282","15502280","18478596","14229014","17206819","14229018","18454677","14229013","17450075","17450011","14229396","17201507","18454764","18478605","15300775","18954473","31572234","18935498","18957161","18954499","26522785","14795704","21543196","11465490","26523368","26523344","31043286","14037711","18163679","11465495","18164265","14228695","12104963","12996541","14037702","14058755","14058757","14058761","14162506","14228969","14228996","14228995","14229021","14229318","14229394","15480622","15494707","15542711","15542708","16968394","16968395","16968396","16968398","17201520","17201518","17201573","17201604","17201698","17201699","17206814","17206820","17450013","17450074","17450133","18180858","18180865","18336301","18454680","18478359","18478590","18478597","18478606","18478611","18478614","18954411","18954414","18954445","18954448","18954449","18954451","18954455","18954459","18954467","18954484","18954495","18954500","18957160","21543194"]; for (var i = 0; i < vifah_skus.length; i++) {     if (sku == vifah_skus[i]) {         audience_type = "audience_type=vifah_audience";         break;     } }; audience_type;')],['shadditional',arbitraryJSCode('var sh_audience_type = null; var url = window.location.href.toLowerCase().trim(); if ((url.indexOf("middlebrook") > -1 && url.indexOf("designs") > -1) || (url.indexOf("walker") > -1 && url.indexOf("edison") > -1) || (url.indexOf("carbon") > -1 && url.indexOf("loft") > -1) || (url.indexOf("carson") > -1 && url.indexOf("carrington") > -1) || (url.indexOf("the") > -1 && url.indexOf("gray") > -1 && url.indexOf("barn") > -1)) {     sh_audience_type = "sh_audience_type=walker_edison" }; sh_audience_type;')],['shpb',arbitraryJSCode('mapBrand = (arrayOfSelectors) => { let brand = null; let aA = arrayOfSelectors; for (let i = 0; i < aA.length; i++) { if (document.querySelector(aA[i])) { brand = document.querySelector(aA[i]).textContent.trim(); } } return brand }; mapName = (arrayOfSelectors) => { let name = null; let aA = arrayOfSelectors; for (let i = 0; i < aA.length; i++) { if (document.querySelector(aA[i])) { name = document.querySelector(aA[i]).textContent.trim(); } } return name }; var checkName = mapName(["main > div > div > section > div > div > a"]); if (checkName) { if (checkName.indexOf("Simmons") > -1 && checkName.indexOf("Beautyrest") > -1 && checkName.indexOf("ComforPedic") > -1) { mapBrand(["span#brand-name"]) + " Comforpedic"; } else if (checkName.indexOf("ComforPedic") > -1 && checkName.indexOf("Beautyrest") > -1 && checkName.indexOf("Simmons") == -1) { mapBrand(["span#brand-name"]) }else { mapBrand(["#_3vbDiHU > a"]) } }')],['shadditional',arbitraryJSCode('var makeArray = []; var brandsArray; var aA = document.querySelectorAll("#cartHtml > main > section > div.ahi > div.ahk > div.oy > div > div > div > div > a"); var r = /[A-Za-z0-9 ]+/g; for (var i = 0; i < aA.length; i++) { if (aA[i]) { var check = aA[i].textContent.toLowerCase().trim(); if (check.indexOf("christopher knight home") > -1) { makeArray.push("cart_brand=christopher_knight_home"); } if (check.indexOf("madison park") > -1) { makeArray.push("cart_brand=madison_park"); } if (check.indexOf("furniture of america") > -1) { makeArray.push("cart_brand=furniture_of_america"); } if (check.indexOf("hillsdale") > -1) { makeArray.push("cart_brand=hillsdale"); } if (check.indexOf("inspire q") > -1) { makeArray.push("cart_brand=inspire_q"); } if (check.indexOf("mohawk") > -1) { makeArray.push("cart_brand=mohawk"); } if (check.indexOf("nourison") > -1) { makeArray.push("cart_brand=nourison"); } if (check.indexOf("nuloom") > -1) { makeArray.push("cart_brand=nuloom"); } if (check.indexOf("polywood") > -1) { makeArray.push("cart_brand=polywood"); } if (check.indexOf("RST Brands") > -1) { makeArray.push("cart_brand=rst_brands"); } if (check.indexOf("safavieh") > -1) { makeArray.push("cart_brand=safavieh"); } if (check.indexOf("serta") > -1) { makeArray.push("cart_brand=serta"); } if (check.indexOf("corvus") > -1) { makeArray.push("cart_brand=corvus"); } if (check.indexOf("south shore furniture") > -1) { makeArray.push("cart_brand=south_shore_furniture"); } if (check.indexOf("harper blvd") > -1) { makeArray.push("cart_brand=harper_blvd"); } if (check.indexOf("vonn lighting") > -1) { makeArray.push("cart_brand=vonn_lighting"); } if (check.indexOf("linon") > -1) { makeArray.push("cart_brand=linon"); } } else { "" } }; brandsArray = Array.from(new Set(makeArray)).toString(); if (brandsArray == "") { "nothing=returned" } else { brandsArray };')],['shadditional',arbitraryJSCode('var user_type=null; if(window.location.host == "safavieh.com"){user_type="user_type=safavieh_user";};user_type;')],['shpn',arbitraryJSCode('mapName = (arrayOfSelectors) => { let name = null; let aA=arrayOfSelectors; for(let i = 0; i < aA.length; i++){ if(document.querySelector(aA[i])){ name=document.querySelector(aA[i]).textContent.trim();} } return name }; mapName(["div > h1"])')],['shadditional',arbitraryJSCode('var url=window.location.href; var cleanURL=url.replace(/[,=]/g,""); "url="+cleanURL')],['shcv',arbitraryJSCode('mapCartValue = (arrayOfSelectors = [], currencySymbol = "$") => { let cartVal = null; let aA = arrayOfSelectors; for (let i = 0; i < aA.length; i++) { if (document.querySelector(aA[i])) { cartVal = document.querySelector(aA[i]).textContent.trim(); cartVal = cartVal.indexOf(currencySymbol) > -1 ? /[0-9,.]+/.exec(cartVal)[0].replace(",","") : null; } } return cartVal };mapCartValue(["#scrollingContainer > div.main-totals-wrap > div.totals-item.total-type-SUBTOTAL > span.totals-item-value.totals-item-COST"], "")')],['shoup',arbitraryJSCode('var order_prices=""; for(var i = 0; i < ostk.data.track.orderData.products.length; i++){if(ostk.data.track.orderData.products[i].price){let cleaned=ostk.data.track.orderData.products[i].price.toString().replace(/[,]/g,"").trim();order_prices+=","+cleaned;}};order_prices=order_prices.substring(1, order_prices.length);order_prices;')],['shadditional',arbitraryJSCode('function sh_pixel(){(function(){"use strict";var e=null,b="4.0.0",n="19970",additional="", t,r,i;try{t=top.document.referer!==""?encodeURIComponent(top.document.referrer.substring(0,2048)):""}catch(o){t=document.referrer!==null?document.referrer.toString().substring(0,2048):""}try{r=window&&window.top&&document.location&&window.top.location===document.location?document.location:window&&window.top&&window.top.location&&""!==window.top.location?window.top.location:document.location}catch(u){r=document.location}try{i=parent.location.href!==""?encodeURIComponent(parent.location.href.toString().substring(0,2048)):""}catch(a){try{i=r!==null?encodeURIComponent(r.toString().substring(0,2048)):""}catch(f){i=""}}var l,c=document.createElement("script"),h=null,p=document.getElementsByTagName("script"),d=Number(p.length)-1,v=document.getElementsByTagName("script")[d];if(typeof l==="undefined"){l=Math.floor(Math.random()*1e17)}h="dx.steelhousemedia.com/spx?"+"dxver="+b+"&shaid="+n+"&tdr="+t+"&plh="+i+"&cb="+l+additional;c.type="text/javascript";c.src=("https:"===document.location.protocol?"https://":"http://")+h;v.parentNode.insertBefore(c,v)})()}function hashHandler(){this.oldHash = window.location.href;this.Check;var that = this;var detect = function(){if(that.oldHash!=window.location.href){window.newFlag=1; sh_pixel();that.oldHash = window.location.href;}};this.Check = setInterval(detect, 100);}; if(!window.newFlag){var hashDetection = new hashHandler();}; var blank="nothing1=returned2";blank;')],['shadditional',arbitraryJSCode('`client_id=${document.cookie.split("_gid=GA1.2.")[1].split(";")[0].trim()}`')],['shadditional',arbitraryJSCode('var order_skus=""; for(var i = 0; i < ostk.data.track.orderData.products.length; i++){if(ostk.data.track.orderData.products[i].productId){order_skus+=",order_skus="+ostk.data.track.orderData.products[i].productId;}};order_skus=order_skus.substring(1, order_skus.length);if(order_skus==""){order_skus=null}else{order_skus};')],['shopid',arbitraryJSCode('var order_brand_names=""; for(var i = 0; i < ostk.data.track.orderData.products.length; i++){if(ostk.data.track.orderData.products[i].brand){order_brand_names+=","+ostk.data.track.orderData.products[i].brand;}};order_brand_names=order_brand_names.substring(1, order_brand_names.length);order_brand_names;')],['shps',arbitraryJSCode('utag.data.product_sku[0]')]])
+		}, 0)
+	}
+})();
